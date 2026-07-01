@@ -399,13 +399,6 @@ footer{border-top:1px solid var(--border);padding:0}
 
 .bb-section{padding:0 10px}.bb-game-btn span{display:none}}
 
-/* ── CRT MODE ── */
-body.crt::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(180deg,transparent 0px,transparent 2px,rgba(0,0,0,0.13) 2px,rgba(0,0,0,0.13) 3px);pointer-events:none;z-index:9998;animation:crt-roll 8s linear infinite}
-@keyframes crt-roll{0%{background-position:0 0}100%{background-position:0 300px}}
-body.crt::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(0,0,0,0.65) 100%);pointer-events:none;z-index:9997}
-body.crt{filter:contrast(1.15) brightness(0.88) saturate(0.75) sepia(0.12)}
-#crt-btn{position:fixed;top:80px;right:16px;z-index:90;width:38px;height:38px;border-radius:8px;background:rgba(8,12,20,0.9);border:1px solid var(--border);color:var(--fg2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(8px)}
-#crt-btn:hover,#crt-btn.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px rgba(255,107,0,0.3)}
 
 /* ── KONAMI OVERLAY ── */
 #konami-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
@@ -429,7 +422,7 @@ body.crt{filter:contrast(1.15) brightness(0.88) saturate(0.75) sepia(0.12)}
 /* ── ARCADE MODE ── */
 body.arcade{padding:110px 80px 130px;overflow-x:hidden}
 body.arcade nav{display:none!important}
-body.arcade #crt-btn,body.arcade #arcade-toggle-btn{display:none}
+body.arcade #arcade-toggle-btn{display:none!important}
 #arcade-cabinet{display:none;pointer-events:none}
 body.arcade #arcade-cabinet{display:block}
 #arc-top{position:fixed;top:0;left:0;right:0;height:110px;background:linear-gradient(180deg,#3e1a00,#5c2a00 50%,#3e1a00);border-bottom:4px solid #ff6b00;box-shadow:0 0 40px rgba(255,107,0,.5),0 6px 40px rgba(255,107,0,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;z-index:9982;pointer-events:auto;overflow:hidden}
