@@ -396,10 +396,64 @@ footer{border-top:1px solid var(--border);padding:0}
 .footer-bottom{display:flex;align-items:center;justify-content:space-between;padding:20px 0;flex-wrap:wrap;gap:8px}
 .footer-bottom p{font-family:var(--font-display);font-size:.75rem;color:var(--fg2)}
 .footer-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-size:.65rem;letter-spacing:.12em;color:var(--fg2);background:rgba(31,111,235,.08);border:1px solid rgba(31,111,235,.15);padding:4px 10px;border-radius:99px}
+
+/* ── CRT MODE ── */
+body.crt::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0.13) 0px,rgba(0,0,0,0.13) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9998}
+body.crt::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 60%,rgba(0,0,0,0.55) 100%);pointer-events:none;z-index:9997}
+body.crt{filter:contrast(1.12) brightness(0.88) saturate(0.85);animation:crt-flicker 0.12s infinite}
+@keyframes crt-flicker{0%,100%{opacity:1}50%{opacity:.97}}
+
+/* ── FLOATING CONTROLS ── */
+.float-controls{position:fixed;bottom:80px;right:22px;display:flex;flex-direction:column;gap:8px;z-index:90}
+.float-btn{width:44px;height:44px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--fg2);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.float-btn:hover,.float-btn.active{background:rgba(255,107,0,.15);border-color:var(--accent);color:var(--accent)}
+
+/* ── KONAMI OVERLAY ── */
+#konami-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
+#konami-overlay.show{opacity:1;pointer-events:all}
+.konami-title{font-family:var(--font-display);font-size:clamp(2rem,6vw,4rem);color:var(--accent);text-align:center;animation:konami-pulse 0.5s infinite alternate}
+.konami-sub{font-family:var(--font-display);font-size:.9rem;color:var(--fg2);margin-top:16px;letter-spacing:.2em}
+.konami-barrels{font-size:3rem;margin:24px 0;letter-spacing:12px;animation:konami-spin 1s linear infinite}
+@keyframes konami-pulse{from{text-shadow:0 0 20px var(--accent)}to{text-shadow:0 0 60px var(--accent),0 0 100px #ff3300}}
+@keyframes konami-spin{to{letter-spacing:20px;opacity:.5}}
+
+/* ── MINI GAME ── */
+#game-modal{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:99990;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+#game-modal.show{display:flex}
+#game-canvas{border:2px solid var(--accent);border-radius:8px;background:#0a0f1e;image-rendering:pixelated}
+.game-hud{font-family:var(--font-display);font-size:.8rem;color:var(--accent);letter-spacing:.1em;display:flex;gap:32px}
+.game-close-btn{font-family:var(--font-display);font-size:.7rem;color:var(--fg2);background:none;border:1px solid var(--border);padding:8px 20px;border-radius:6px;cursor:pointer;letter-spacing:.1em}
+.game-close-btn:hover{color:var(--accent);border-color:var(--accent)}
+.play-game-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),#e55a00);color:#fff;padding:12px 28px;border-radius:8px;font-family:var(--font-display);font-size:.82rem;font-weight:600;letter-spacing:.08em;border:none;cursor:pointer;margin-top:16px;transition:filter .2s}
+.play-game-btn:hover{filter:brightness(1.2)}
 </style>
 </head>
 <body>
 <div id="read-progress"></div>
+
+<!-- FLOAT CONTROLS -->
+<div class="float-controls">
+  <button class="float-btn" id="btn-crt" title="Modo CRT">📺</button>
+  <button class="float-btn" id="btn-music" title="Música 8-bit">🎵</button>
+  <button class="float-btn" id="btn-game" title="Mini Jogo">🕹️</button>
+</div>
+
+<!-- KONAMI OVERLAY -->
+<div id="konami-overlay">
+  <div class="konami-title">⬆⬆⬇⬇⬅➡⬅➡ BA</div>
+  <div class="konami-barrels">🛢🛢🛢</div>
+  <div class="konami-title" style="font-size:clamp(1.2rem,3vw,2rem)">CHEAT CODE ATIVADO!</div>
+  <div class="konami-sub">Industrial Kong — Modo Caos</div>
+  <button onclick="document.getElementById('konami-overlay').classList.remove('show')" style="margin-top:32px;font-family:var(--font-display);font-size:.7rem;color:var(--fg2);background:none;border:1px solid var(--border);padding:10px 24px;border-radius:6px;cursor:pointer;letter-spacing:.1em">FECHAR ESC</button>
+</div>
+
+<!-- MINI GAME MODAL -->
+<div id="game-modal">
+  <div class="game-hud"><span>PONTOS: <span id="gm-score">0</span></span><span>VIDAS: <span id="gm-lives">❤❤❤</span></span></div>
+  <canvas id="game-canvas" width="480" height="300"></canvas>
+  <div style="font-family:var(--font-display);font-size:.65rem;color:var(--fg2);letter-spacing:.15em">← → MOVER &nbsp;|&nbsp; ESPAÇO / ↑ PULAR</div>
+  <button class="game-close-btn" id="game-close-btn">✕ FECHAR</button>
+</div>
 
 <!-- LOADING SCREEN -->
 <div id="loader">
@@ -460,6 +514,7 @@ footer{border-top:1px solid var(--border);padding:0}
     <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
       <a href="#sobre" class="btn-primary">EXPLORAR PROJETO</a>
       <a href="#jogo" style="display:inline-flex;align-items:center;gap:8px;color:var(--fg2);font-family:var(--font-display);font-size:.82rem;letter-spacing:.06em;padding:14px 24px;border:1px solid var(--border);border-radius:8px;transition:color .2s,border-color .2s" onmouseover="this.style.color='var(--fg)';this.style.borderColor='rgba(88,166,255,.4)'" onmouseout="this.style.color='var(--fg2)';this.style.borderColor='var(--border)'">VER O JOGO ▶</a>
+      <button class="play-game-btn" id="btn-game-hero">🕹️ JOGAR AGORA</button>
     </div>
   </div>
   <div class="hero-art">
@@ -1356,6 +1411,174 @@ document.querySelectorAll('.team-card').forEach(card=>{
     card.appendChild(tip);
   }
 });
+
+// ── CRT MODE ──────────────────────────────────────────────────────────
+document.getElementById('btn-crt').addEventListener('click', function(){
+  document.body.classList.toggle('crt');
+  this.classList.toggle('active');
+});
+
+// ── MÚSICA 8-BIT ──────────────────────────────────────────────────────
+(function(){
+  let ctx, playing = false, nodes = [];
+  const notes = [330,392,440,392,330,294,262,262,330,392,440,392,330,294,262,262,392,440,494,440,392,330,294,294];
+  const dur = 0.15;
+  function playMelody(){
+    if(!ctx) ctx = new (window.AudioContext||window.webkitAudioContext)();
+    nodes.forEach(n=>{try{n.stop()}catch(e){}});
+    nodes=[];
+    let t = ctx.currentTime;
+    notes.forEach((freq,i)=>{
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type='square';
+      o.frequency.value=freq;
+      g.gain.setValueAtTime(0.06,t);
+      g.gain.exponentialRampToValueAtTime(0.001,t+dur*0.9);
+      o.connect(g);g.connect(ctx.destination);
+      o.start(t);o.stop(t+dur);
+      nodes.push(o);
+      t+=dur;
+    });
+    if(playing) setTimeout(playMelody, notes.length*dur*1000+200);
+  }
+  document.getElementById('btn-music').addEventListener('click', function(){
+    playing = !playing;
+    this.classList.toggle('active', playing);
+    if(playing) playMelody();
+    else { nodes.forEach(n=>{try{n.stop()}catch(e){}});nodes=[]; }
+  });
+})();
+
+// ── KONAMI CODE ────────────────────────────────────────────────────────
+(function(){
+  const seq=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let idx=0;
+  document.addEventListener('keydown',function(e){
+    if(e.key===seq[idx]){idx++;if(idx===seq.length){idx=0;document.getElementById('konami-overlay').classList.add('show');}}
+    else idx=0;
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')document.getElementById('konami-overlay').classList.remove('show');});
+})();
+
+// ── MINI JOGO ─────────────────────────────────────────────────────────
+(function(){
+  const modal=document.getElementById('game-modal');
+  const canvas=document.getElementById('game-canvas');
+  const ctx=canvas.getContext('2d');
+  const W=480,H=300,FLOOR=H-40,GRAVITY=0.5,JUMP=-11,SPD=4;
+  let player,barrels,score,lives,frame,running,keys={};
+
+  function init(){
+    player={x:60,y:FLOOR-32,w:24,h:32,vy:0,onGround:false};
+    barrels=[];score=0;lives=3;frame=0;running=true;
+    document.getElementById('gm-score').textContent=0;
+    document.getElementById('gm-lives').textContent='❤❤❤';
+    loop();
+  }
+
+  function drawPlayer(){
+    ctx.fillStyle='#1e90ff';ctx.fillRect(player.x,player.y,player.w,player.h);
+    ctx.fillStyle='#ffd700';ctx.fillRect(player.x+6,player.y+4,12,10);
+    ctx.fillStyle='#ff6b00';ctx.fillRect(player.x+2,player.y+14,20,14);
+  }
+
+  function drawBarrel(b){
+    ctx.fillStyle='#8B4513';ctx.fillRect(b.x,b.y,b.w,b.h);
+    ctx.strokeStyle='#ffd700';ctx.lineWidth=2;
+    ctx.strokeRect(b.x+2,b.y+4,b.w-4,b.h-8);
+    ctx.beginPath();ctx.moveTo(b.x,b.y+b.h/2);ctx.lineTo(b.x+b.w,b.y+b.h/2);ctx.stroke();
+  }
+
+  function loop(){
+    if(!running)return;
+    requestAnimationFrame(loop);
+    ctx.clearRect(0,0,W,H);
+
+    // bg
+    ctx.fillStyle='#0a0f1e';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#1a2a1a';ctx.fillRect(0,FLOOR+32,W,H);
+    ctx.fillStyle='#ff6b00';
+    for(let x=0;x<W;x+=40){ctx.fillRect(x,FLOOR+32,36,8);}
+
+    // platform
+    ctx.fillStyle='#1e2d42';ctx.fillRect(0,FLOOR+32,W,8);
+
+    // player move
+    if(keys['ArrowLeft']||keys['a']) player.x=Math.max(0,player.x-SPD);
+    if(keys['ArrowRight']||keys['d']) player.x=Math.min(W-player.w,player.x+SPD);
+    player.vy+=GRAVITY;
+    player.y+=player.vy;
+    if(player.y>=FLOOR){player.y=FLOOR;player.vy=0;player.onGround=true;}
+    else player.onGround=false;
+    drawPlayer();
+
+    // spawn barrels
+    frame++;score++;
+    document.getElementById('gm-score').textContent=score;
+    if(frame%(Math.max(40,80-Math.floor(score/300))===0?1:Math.max(40,80-Math.floor(score/300)))){
+      if(frame%Math.max(40,80-Math.floor(score/300))===0)
+        barrels.push({x:W,y:FLOOR-20,w:20,h:20,vx:-(2+Math.random()*2)});
+    }
+
+    // barrels
+    barrels=barrels.filter(b=>{
+      b.x+=b.vx;
+      drawBarrel(b);
+      if(b.x+b.w<0)return false;
+      // collision
+      if(player.x<b.x+b.w&&player.x+player.w>b.x&&player.y<b.y+b.h&&player.y+player.h>b.y){
+        lives--;
+        const hearts=['','❤','❤❤','❤❤❤'];
+        document.getElementById('gm-lives').textContent=hearts[Math.max(0,lives)]||'';
+        if(lives<=0){running=false;gameOver();return false;}
+        barrels=[];return false;
+      }
+      return true;
+    });
+
+    // hud
+    ctx.fillStyle='var(--accent)';ctx.font='bold 12px monospace';
+    ctx.fillStyle='#ff6b00';ctx.fillText('INDUSTRIAL KONG',W/2-60,20);
+  }
+
+  function gameOver(){
+    ctx.fillStyle='rgba(0,0,0,0.8)';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#ff6b00';ctx.font='bold 28px monospace';ctx.textAlign='center';
+    ctx.fillText('GAME OVER',W/2,H/2-20);
+    ctx.fillStyle='#fff';ctx.font='16px monospace';
+    ctx.fillText('PONTOS: '+score,W/2,H/2+20);
+    ctx.fillText('Pressione R para reiniciar',W/2,H/2+50);
+    ctx.textAlign='left';
+  }
+
+  function openGame(){modal.classList.add('show');init();}
+  function closeGame(){modal.classList.remove('show');running=false;}
+
+  document.getElementById('btn-game').addEventListener('click',openGame);
+  document.getElementById('btn-game-hero').addEventListener('click',openGame);
+  document.getElementById('game-close-btn').addEventListener('click',closeGame);
+
+  document.addEventListener('keydown',function(e){
+    keys[e.key]=true;
+    if((e.key==='ArrowUp'||e.key===' '||e.key==='w')&&player&&player.onGround){player.vy=JUMP;e.preventDefault();}
+    if(e.key==='r'&&!running&&modal.classList.contains('show'))init();
+    if(e.key==='Escape')closeGame();
+  });
+  document.addEventListener('keyup',function(e){keys[e.key]=false;});
+
+  // touch
+  let tx=null;
+  canvas.addEventListener('touchstart',function(e){tx=e.touches[0].clientX;});
+  canvas.addEventListener('touchend',function(e){
+    if(!tx)return;
+    const dx=e.changedTouches[0].clientX-tx;
+    if(Math.abs(dx)<20&&player&&player.onGround)player.vy=JUMP;
+    else if(dx<-20)keys['ArrowLeft']=true,setTimeout(()=>keys['ArrowLeft']=false,200);
+    else if(dx>20)keys['ArrowRight']=true,setTimeout(()=>keys['ArrowRight']=false,200);
+    tx=null;
+  });
+})();
 
 // ── FAÍSCAS NO HERO ────────────────────────────────────────────────────
 (function(){
