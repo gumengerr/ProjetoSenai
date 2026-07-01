@@ -442,8 +442,11 @@ body.arcade #arcade-cabinet{display:block}
 #arc-scanlines{position:fixed;top:120px;left:90px;right:90px;bottom:140px;z-index:9983;pointer-events:none;background:repeating-linear-gradient(180deg,transparent,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 3px)}
 #arc-vignette{position:fixed;top:120px;left:90px;right:90px;bottom:140px;z-index:9984;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.35) 100%)}
 #arc-bottom{position:fixed;bottom:0;left:0;right:0;height:130px;background:linear-gradient(180deg,#4a1e00,#2a1000 55%,#150800);border-top:4px solid rgba(255,107,0,.45);box-shadow:0 -5px 35px rgba(255,107,0,.18);display:flex;align-items:center;justify-content:center;gap:50px;z-index:9982;pointer-events:auto}
-.arc-stick-wrap{display:flex;flex-direction:column;align-items:center}
-.arc-ball{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#888,#111);box-shadow:0 5px 10px rgba(0,0,0,.6),inset 0 -2px 5px rgba(255,255,255,.12);position:relative;z-index:1}
+.arc-stick-wrap{display:flex;flex-direction:column;align-items:center;cursor:grab;user-select:none}
+.arc-stick-wrap:active{cursor:grabbing}
+.arc-ball{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#888,#111);box-shadow:0 5px 10px rgba(0,0,0,.6),inset 0 -2px 5px rgba(255,255,255,.12);position:relative;z-index:1;transition:transform .12s cubic-bezier(.25,.46,.45,.94),box-shadow .12s}
+.arc-stick-wrap:hover .arc-ball{box-shadow:0 5px 10px rgba(0,0,0,.6),inset 0 -2px 5px rgba(255,255,255,.12),0 0 14px rgba(255,150,0,.4)}
+.arc-stick-lbl{font-family:'Orbitron',sans-serif;font-size:.36rem;color:rgba(255,200,80,.45);letter-spacing:.1em;text-transform:uppercase;margin-top:5px}
 .arc-stick{width:13px;height:26px;background:linear-gradient(180deg,#555,#1e1e1e);border-radius:2px;margin-top:-4px;box-shadow:0 4px 8px rgba(0,0,0,.4)}
 .arc-base{width:58px;height:14px;margin-top:-2px;background:linear-gradient(180deg,#3a3a3a,#111);border-radius:4px;box-shadow:0 4px 10px rgba(0,0,0,.5)}
 .arc-btns{display:flex;gap:14px;align-items:flex-end}
@@ -474,14 +477,14 @@ body.arcade #arcade-toggle-btn{display:none!important}
   <div id="arc-scanlines"></div>
   <div id="arc-vignette"></div>
   <div id="arc-bottom">
-    <div class="arc-stick-wrap"><div class="arc-ball"></div><div class="arc-stick"></div><div class="arc-base"></div></div>
+    <div class="arc-stick-wrap" id="arc-stick-l"><div class="arc-ball"></div><div class="arc-stick"></div><div class="arc-base"></div><div class="arc-stick-lbl">ROLAR</div></div>
     <div class="arc-btns">
       <div class="arc-btn-wrap"><button class="arc-btn arc-btn-r" onclick="toggleArcade()"></button><span class="arc-lbl">SAIR</span></div>
       <div class="arc-btn-wrap"><button class="arc-btn arc-btn-y" onclick="document.getElementById('btn-game-hero').click()"></button><span class="arc-lbl">JOGAR</span></div>
       <div class="arc-btn-wrap"><button class="arc-btn arc-btn-b" onclick="window.scrollTo({top:0,behavior:'smooth'})"></button><span class="arc-lbl">TOPO</span></div>
       <div class="arc-btn-wrap"><button class="arc-btn arc-btn-g" onclick="document.getElementById('equipe').scrollIntoView({behavior:'smooth'})"></button><span class="arc-lbl">EQUIPE</span></div>
     </div>
-    <div class="arc-stick-wrap"><div class="arc-ball"></div><div class="arc-stick"></div><div class="arc-base"></div></div>
+    <div class="arc-stick-wrap" id="arc-stick-r"><div class="arc-ball"></div><div class="arc-stick"></div><div class="arc-base"></div><div class="arc-stick-lbl">SEÇÃO</div></div>
   </div>
 </div>
 <button id="arcade-toggle-btn" onclick="toggleArcade()" title="Modo Arcade">&#127918; MODO ARCADE</button>
@@ -1880,6 +1883,46 @@ function toggleArcade(){
   document.getElementById('arcade-toggle-btn').classList.toggle('on',on);
   if(on)window.scrollTo(0,0);
 }
+// Analógicos interativos
+(function(){
+  var SECTIONS=['home','sobre','desenvolvimento','jogo','fliperama','making-of','galeria','equipe','contato'];
+  function setupStick(wrap,onClickFn){
+    var ball=wrap.querySelector('.arc-ball');
+    wrap.addEventListener('mousemove',function(e){
+      var r=wrap.getBoundingClientRect();
+      var dx=Math.max(-11,Math.min(11,(e.clientX-(r.left+r.width/2))*0.5));
+      var dy=Math.max(-11,Math.min(11,(e.clientY-(r.top+r.height/2))*0.5));
+      ball.style.transform='translate('+dx+'px,'+dy+'px)';
+    });
+    wrap.addEventListener('mouseleave',function(){ball.style.transform='';});
+    wrap.addEventListener('click',function(e){
+      var r=wrap.getBoundingClientRect();
+      var dx=Math.max(-11,Math.min(11,(e.clientX-(r.left+r.width/2))*0.9));
+      var dy=Math.max(-11,Math.min(11,(e.clientY-(r.top+r.height/2))*0.9));
+      ball.style.transition='transform .05s';
+      ball.style.transform='translate('+dx+'px,'+dy+'px)';
+      setTimeout(function(){ball.style.transition='transform .14s cubic-bezier(.25,.46,.45,.94)';ball.style.transform='';},110);
+      onClickFn(e,r);
+    });
+  }
+  var stickL=document.getElementById('arc-stick-l');
+  var stickR=document.getElementById('arc-stick-r');
+  if(stickL) setupStick(stickL,function(e,r){
+    var up=e.clientY<(r.top+r.height/2);
+    window.scrollBy({top:up?-Math.round(window.innerHeight*0.65):Math.round(window.innerHeight*0.65),behavior:'smooth'});
+  });
+  if(stickR) setupStick(stickR,function(e,r){
+    var up=e.clientY<(r.top+r.height/2);
+    var cur=0;
+    SECTIONS.forEach(function(id,i){
+      var el=document.getElementById(id);
+      if(el&&el.getBoundingClientRect().top<=130) cur=i;
+    });
+    var next=up?Math.max(0,cur-1):Math.min(SECTIONS.length-1,cur+1);
+    var el=document.getElementById(SECTIONS[next]);
+    if(el) el.scrollIntoView({behavior:'smooth'});
+  });
+})();
 </script>
 </body>
 </html>
