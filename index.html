@@ -485,15 +485,14 @@ body.arcade #arcade-toggle-btn{display:none!important}
     <div class="arc-btns">
       <div class="arc-btn-wrap"><button class="arc-btn arc-btn-r" onclick="toggleArcade()"></button><span class="arc-lbl">SAIR</span></div>
       <div class="arc-btn-wrap"><button class="arc-btn arc-btn-y" onclick="document.getElementById('btn-game-hero').click()"></button><span class="arc-lbl">JOGAR</span></div>
-      <div class="arc-btn-wrap"><button class="arc-btn arc-btn-b" onclick="scrollTo({top:0,behavior:'smooth'})"></button><span class="arc-lbl">TOPO</span></div>
-      <div class="arc-btn-wrap"><button class="arc-btn arc-btn-g" onclick="document.querySelector('#sobre').scrollIntoView({behavior:'smooth'})"></button><span class="arc-lbl">EQUIPE</span></div>
+      <div class="arc-btn-wrap"><button class="arc-btn arc-btn-b" onclick="window.scrollTo({top:0,behavior:'smooth'})"></button><span class="arc-lbl">TOPO</span></div>
+      <div class="arc-btn-wrap"><button class="arc-btn arc-btn-g" onclick="document.getElementById('equipe').scrollIntoView({behavior:'smooth'})"></button><span class="arc-lbl">EQUIPE</span></div>
     </div>
     <div class="arc-stick-wrap"><div class="arc-ball"></div><div class="arc-stick"></div><div class="arc-base"></div></div>
   </div>
 </div>
 <button id="arcade-toggle-btn" onclick="toggleArcade()" title="Modo Arcade">&#127918; MODO ARCADE</button>
 <div id="read-progress"></div>
-<button id="crt-btn" title="Modo CRT">&#128250;</button>
 
 </div>
 <!-- KONAMI OVERLAY -->
@@ -1471,11 +1470,6 @@ document.querySelectorAll('.team-card').forEach(card=>{
 });
 
 
-// ── CRT MODE ──────────────────────────────────────────────────────────
-document.getElementById('crt-btn').addEventListener('click',function(){
-  document.body.classList.toggle('crt');
-  this.classList.toggle('on');
-});
 
 // ── KONAMI CODE ──────────────────────────────────────────────────────────
 (function(){
