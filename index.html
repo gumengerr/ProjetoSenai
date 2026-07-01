@@ -404,7 +404,7 @@ footer{border-top:1px solid var(--border);padding:0}
 /* ── MINI GAME ── */
 #game-modal{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:99990;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 #game-modal.show{display:flex}
-#game-canvas{border:2px solid var(--accent);border-radius:8px;background:#0a0f1e;image-rendering:pixelated}
+#game-canvas{border:2px solid var(--accent);border-radius:8px;background:#b8c8d8;image-rendering:pixelated}
 .game-hud{font-family:var(--font-display);font-size:.8rem;color:var(--accent);letter-spacing:.1em;display:flex;gap:32px}
 .game-close-btn{font-family:var(--font-display);font-size:.7rem;color:var(--fg2);background:none;border:1px solid var(--border);padding:8px 20px;border-radius:6px;cursor:pointer;letter-spacing:.1em}
 .game-close-btn:hover{color:var(--accent);border-color:var(--accent)}
@@ -472,7 +472,7 @@ body.arcade #arcade-toggle-btn{display:none!important}
     <div class="arc-stick-wrap" id="arc-stick-l"><div class="arc-ball"></div><div class="arc-stick"></div><div class="arc-base"></div><div class="arc-stick-lbl">ROLAR</div></div>
     <div class="arc-btns">
       <div class="arc-btn-wrap"><button class="arc-btn arc-btn-r" onclick="toggleArcade()"></button><span class="arc-lbl">SAIR</span></div>
-      <div class="arc-btn-wrap"><button class="arc-btn arc-btn-y" onclick="document.getElementById('btn-game-hero').click()"></button><span class="arc-lbl">JOGAR</span></div>
+      <div class="arc-btn-wrap"><button class="arc-btn arc-btn-y" onclick="openGame()"></button><span class="arc-lbl">JOGAR</span></div>
       <div class="arc-btn-wrap"><button class="arc-btn arc-btn-b" onclick="window.scrollTo({top:0,behavior:'smooth'})"></button><span class="arc-lbl">TOPO</span></div>
       <div class="arc-btn-wrap"><button class="arc-btn arc-btn-g" onclick="document.getElementById('equipe').scrollIntoView({behavior:'smooth'})"></button><span class="arc-lbl">EQUIPE</span></div>
     </div>
@@ -1729,8 +1729,9 @@ document.querySelectorAll('.team-card').forEach(card=>{
     ctx.textAlign='left';
   }
 
-  function openGame(){modal.classList.add('show');init();}
+  function openGame(){modal.classList.add('show');running=false;setTimeout(init,50);}
   function closeGame(){modal.classList.remove('show');running=false;}
+  window.openGame=openGame;
   document.getElementById('btn-game-hero').addEventListener('click',openGame);
   document.getElementById('game-close-btn').addEventListener('click',closeGame);
 
