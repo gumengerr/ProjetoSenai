@@ -460,8 +460,10 @@ body.arcade #arcade-cabinet{display:block}
 .arc-btn-r{background:#d01010;box-shadow:0 5px 0 #7a0808,0 0 18px rgba(208,16,16,.6)}.arc-btn-y{background:#c99000;box-shadow:0 5px 0 #7a5800,0 0 18px rgba(201,144,0,.6)}.arc-btn-b{background:#0d6efd;box-shadow:0 5px 0 #083e8a,0 0 18px rgba(13,110,253,.6)}.arc-btn-g{background:#0a7a38;box-shadow:0 5px 0 #054520,0 0 18px rgba(10,122,56,.6)}
 .arc-btn-r:active{box-shadow:0 2px 0 #7a0808!important}.arc-btn-y:active{box-shadow:0 2px 0 #7a5800!important}.arc-btn-b:active{box-shadow:0 2px 0 #083e8a!important}.arc-btn-g:active{box-shadow:0 2px 0 #054520!important}
 .arc-lbl{font-family:'Orbitron',sans-serif;font-size:.42rem;color:rgba(255,200,80,.6);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
-#arcade-toggle-btn{position:fixed;top:130px;right:16px;z-index:90;width:38px;height:38px;border-radius:8px;background:rgba(8,12,20,.9);border:1px solid var(--border);color:var(--fg2);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(8px)}
-#arcade-toggle-btn:hover,#arcade-toggle-btn.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px rgba(255,107,0,.35)}
+#arcade-toggle-btn{position:fixed;bottom:32px;right:24px;z-index:9000;display:flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#e55a00);color:#fff;font-family:var(--font-display);font-size:.72rem;font-weight:700;letter-spacing:.12em;cursor:pointer;border:none;box-shadow:0 0 24px rgba(255,107,0,.5),0 4px 16px rgba(0,0,0,.4);transition:all .2s;animation:arc-btn-pulse 2s infinite}
+@keyframes arc-btn-pulse{0%,100%{box-shadow:0 0 24px rgba(255,107,0,.5),0 4px 16px rgba(0,0,0,.4)}50%{box-shadow:0 0 40px rgba(255,107,0,.8),0 4px 20px rgba(0,0,0,.4)}}
+#arcade-toggle-btn:hover{filter:brightness(1.15);transform:translateY(-2px)}
+body.arcade #arcade-toggle-btn{display:none!important}
 </style>
 </head>
 <body>
@@ -489,7 +491,7 @@ body.arcade #arcade-cabinet{display:block}
     <div class="arc-stick-wrap"><div class="arc-ball"></div><div class="arc-stick"></div><div class="arc-base"></div></div>
   </div>
 </div>
-<button id="arcade-toggle-btn" onclick="toggleArcade()" title="Modo Arcade">&#127918;</button>
+<button id="arcade-toggle-btn" onclick="toggleArcade()" title="Modo Arcade">&#127918; MODO ARCADE</button>
 <div id="read-progress"></div>
 <button id="crt-btn" title="Modo CRT">&#128250;</button>
 
